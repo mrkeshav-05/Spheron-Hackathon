@@ -23,12 +23,12 @@ app.use(cookieParser());
 
 import customerRouter from './routes/customer.routes.js';
 import artistRouter from './routes/artist.routes.js';
-
+import videoRouter from './routes/video.routes.js';
 
 
 app.use('/api/auth/customer', customerRouter);
 app.use('/api/auth/artist', artistRouter);
-
+app.use('api/video', videoRouter);
 
 
 // http://localhost:8000/api/auth/register
