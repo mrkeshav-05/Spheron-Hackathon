@@ -27,11 +27,6 @@ const customerSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
   },
-  favoriteGeneres: [
-    {
-      type: String
-    }
-  ],
   refreshToken: {
     type: String,
   }

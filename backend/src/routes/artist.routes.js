@@ -3,6 +3,8 @@ import { upload } from '../middlewares/multer.middleware.js';
 import { registerArtist } from '../controllers/artist/registerArtist.controller.js';
 import { loginArtist } from '../controllers/artist/loginArtist.controller.js';
 import { getPublicProfile } from '../controllers/artist/getPublicProfile.controller.js';
+import { getArtistDashboard } from '../controllers/artist/getArtistDashboard.controller.js';
+import { verifyJWT } from '../middlewares/authArtist.middleware.js';
 
 
 const router = Router();
@@ -17,6 +19,8 @@ router.route('/register').post(
   registerArtist
 );
 router.route('/login').post(loginArtist);
-router.route('/:artistId/profile').post(getPublicProfile);
+router.route('/:artistId/profile').get(getPublicProfile);
+router.route('/dashboard').get(verifyJWT, getArtistDashboard);
+
 
 export default router;

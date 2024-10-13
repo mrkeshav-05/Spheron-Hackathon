@@ -19,7 +19,7 @@ const registerArtist = asyncHandler(async (req, res, next) => {
     // 9. send the response back to the client
   
   try {
-    const { artistName, email, password, bio, genres } = req.body;
+    const { artistName, email, password } = req.body;
 
     if(
       [ artistName, email, password ].some((field)=>{
@@ -61,8 +61,6 @@ const registerArtist = asyncHandler(async (req, res, next) => {
       email: email.toLowerCase(),
       password,
       profilePicture: profilePicture?.url || "",
-      bio,
-      genres
     })
     console.log(newArtist);
     

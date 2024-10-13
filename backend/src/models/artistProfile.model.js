@@ -6,10 +6,10 @@ const artistProfileSchema = new mongoose.Schema({
     ref: 'Artist',
     required: true,
   },
-  allSongs: [
+  allVideos: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Song',
+      ref: 'Video',
     }
   ]
   // valit address , watct time

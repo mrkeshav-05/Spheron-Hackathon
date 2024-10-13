@@ -19,8 +19,8 @@ const registerCustomer = asyncHandler(async (req, res, next) => {
     // 9. send the response back to the client
   
   try {
-    const { username, email, password, favoriteGeneres } = req.body;
-    console.log(username, email, password, favoriteGeneres);
+    const { username, email, password } = req.body;
+    console.log(username, email, password);
     if(
       [ username, email, password ].some((field)=>{
         field?.trim() === ""
@@ -64,7 +64,6 @@ const registerCustomer = asyncHandler(async (req, res, next) => {
       email: email.toLowerCase(),
       password,
       profilePicture: profilePicture?.url || "",
-      favoriteGeneres: favoriteGeneres || []
     })
     console.log(newCustomer);
     

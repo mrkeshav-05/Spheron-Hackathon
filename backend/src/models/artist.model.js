@@ -26,17 +26,18 @@ const artistSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
   },
-  bio: {
-    type: String,
-  },
-  genres: [
+  videos: [
     {
-      type: String
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Video',
     }
   ],
-  watchTime: {
+  creditReceived: {
     type: Number,
     default: 0
+  },
+  walletAddress: {
+    type: String,
   },
   refreshToken: {
     type: String,
