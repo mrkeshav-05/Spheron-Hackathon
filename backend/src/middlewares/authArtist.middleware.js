@@ -2,7 +2,7 @@ import { Artist } from "../models/artist.model.js";
 import { ApiError } from "../utils/error/ApiError.js";
 import { asyncHandler } from "../utils/error/asyncHandler.js";
 import jwt from "jsonwebtoken";
-export const verifyJWT = asyncHandler(async (req, res, next) => {
+export const verifyJWTForArtist = asyncHandler(async (req, res, next) => {
   try {
     const tokenFromArtist = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
     if(!tokenFromArtist){

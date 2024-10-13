@@ -30,6 +30,7 @@ app.use('/api/auth/customer', customerRouter);
 app.use('/api/auth/artist', artistRouter);
 
 
+
 // http://localhost:8000/api/auth/register
 
 export { app };

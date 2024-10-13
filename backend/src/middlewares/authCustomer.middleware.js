@@ -2,7 +2,7 @@ import { Customer } from "../models/customer.model.js";
 import { ApiError } from "../utils/error/ApiError.js";
 import { asyncHandler } from "../utils/error/asyncHandler.js";
 import jwt from "jsonwebtoken";
-export const verifyJWT = asyncHandler(async (req, res, next) => {
+export const verifyJWTForCustomer = asyncHandler(async (req, res, next) => {
   try {
     const tokenFromCustomer = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
     if(!tokenFromCustomer){

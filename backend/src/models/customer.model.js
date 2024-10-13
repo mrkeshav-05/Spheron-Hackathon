@@ -27,6 +27,10 @@ const customerSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
   },
+  credits: {
+    type: Number,
+    default: 0
+  },
   refreshToken: {
     type: String,
   }

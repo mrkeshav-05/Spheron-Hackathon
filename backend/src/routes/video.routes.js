@@ -4,7 +4,7 @@ import { registerArtist } from '../controllers/artist/registerArtist.controller.
 import { loginArtist } from '../controllers/artist/loginArtist.controller.js';
 import { getPublicProfile } from '../controllers/artist/getPublicProfile.controller.js';
 import { getArtistDashboard } from '../controllers/artist/getArtistDashboard.controller.js';
-import { verifyJWTForArtist } from '../middlewares/authArtist.middleware.js';
+import { verifyJWT } from '../middlewares/authArtist.middleware.js';
 
 
 const router = Router();
@@ -20,7 +20,7 @@ router.route('/register').post(
 );
 router.route('/login').post(loginArtist);
 router.route('/:artistId/profile').get(getPublicProfile);
-router.route('/dashboard').get(verifyJWTForArtist, getArtistDashboard);
+router.route('/dashboard').get(verifyJWT, getArtistDashboard);
 
 
 export default router;

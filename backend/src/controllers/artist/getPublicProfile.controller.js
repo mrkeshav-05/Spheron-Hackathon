@@ -6,7 +6,7 @@ import { ApiResponse } from "../../utils/response/ApiResponse.js";
 const getPublicProfile = asyncHandler(async (req, res) => {
   try{
     const artistId = req.params.artistId;
-    const artist = await Artist.findById(artistId).select('artistName profilePicture bio genres');
+    const artist = await Artist.findById(artistId).select('artistName profilePicture videos');
     if (!artist) {
       return res.status(404).json({ message: 'Artist not found' });
     }
