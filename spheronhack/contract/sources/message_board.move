@@ -1,70 +1,63 @@
-module message_board_addr::message_board {
-    use std::string::String;
+module VideoPlatform::Credits {
+    use aptos_framework::coin::{Self, Coin};
+    use aptos_framework::aptos_coin::AptosCoin;
+    use std::signer;
+    use std::error;
 
-    use aptos_framework::object::{Self, ExtendRef};
-
-    struct Message has key {
-        string_content: String,
+    /// A struct to store the user's credit balance
+    struct UserCredits has key {
+        balance: u64,
     }
 
-    const BOARD_OBJECT_SEED: vector<u8> = b"message_board";
-
-    struct BoardObjectController has key {
-        extend_ref: ExtendRef,
+    /// Initializes the `UserCredits` resource for a new user
+    public entry fun initialize_user(account: &signer) {
+        if (exists<UserCredits>(signer::address_of(account))) {
+            return; // Credits already initialized
+        }
+        move_to(account, UserCredits { balance: 0 });
     }
 
-    // This function is only called once when the module is published for the first time.
-    // init_module is optional, you can also have an entry function as the initializer.
-    fun init_module(sender: &signer) {
-        let constructor_ref = &object::create_named_object(sender, BOARD_OBJECT_SEED);
-        move_to(&object::generate_signer(constructor_ref), BoardObjectController {
-            extend_ref: object::generate_extend_ref(constructor_ref),
-        });
+    /// Function to purchase credits with AptosCoin
+    public entry fun purchase_credits(
+        user: &signer, 
+        platform_wallet: address, 
+        amount: u64
+    ) acquires CoinStore, UserCredits {
+        // Withdraw coins from the user's account
+        let coins = coin::withdraw<AptosCoin>(signer::address_of(user), amount);
+        
+        // Deposit the coins into the platform wallet
+        coin::deposit<AptosCoin>(platform_wallet, coins);
+
+        // Update the user's credit balance
+        let user_credits = borrow_global_mut<UserCredits>(signer::address_of(user));
+        user_credits.balance = user_credits.balance + amount;
     }
 
-    // ======================== Write functions ========================
+    /// Function to watch a video and pay the creator
+    public entry fun watch_video(
+        user: &signer,
+        creator_wallet: address,
+        platform_wallet: address,
+        credit_cost: u64
+    ) acquires UserCredits, CoinStore {
+        let user_credits = borrow_global_mut<UserCredits>(signer::address_of(user));
+        
+        // Ensure the user has enough credits
+        if (user_credits.balance < credit_cost) {
+            abort error::not_enough_balance(0); // Error code 0 for insufficient credits
+        }
 
-    public entry fun post_message(
-        _sender: &signer,
-        new_string_content: String,
-    ) acquires Message, BoardObjectController {
-        if (!exist_message()) {
-            let board_obj_signer = get_board_obj_signer();
-            move_to(&board_obj_signer, Message {
-                string_content: new_string_content,
-            });
-        };
-        let message = borrow_global_mut<Message>(get_board_obj_address());
-        message.string_content = new_string_content;
-    }
+        // Deduct credits from the user’s balance
+        user_credits.balance = user_credits.balance - credit_cost;
 
-    // ======================== Read Functions ========================
+        // Calculate creator's share (90%)
+        let creator_share = credit_cost * 9 / 10;
 
-    #[view]
-    public fun exist_message(): bool {
-        exists<Message>(get_board_obj_address())
-    }
+        // Withdraw creator's share from the platform wallet
+        let creator_coins = coin::withdraw<AptosCoin>(platform_wallet, creator_share);
+        coin::deposit<AptosCoin>(creator_wallet, creator_coins);
 
-    #[view]
-    public fun get_message_content(): (String) acquires Message {
-        let message = borrow_global<Message>(get_board_obj_address());
-        message.string_content
-    }
-
-    // ======================== Helper functions ========================
-
-    fun get_board_obj_address(): address {
-        object::create_object_address(&@message_board_addr, BOARD_OBJECT_SEED)
-    }
-
-    fun get_board_obj_signer(): signer acquires BoardObjectController {
-        object::generate_signer_for_extending(&borrow_global<BoardObjectController>(get_board_obj_address()).extend_ref)
-    }
-
-    // ======================== Unit Tests ========================
-
-    #[test_only]
-    public fun init_module_for_test(sender: &signer) {
-        init_module(sender);
+        // Remaining 10% stays in the platform wallet as commission
     }
 }
