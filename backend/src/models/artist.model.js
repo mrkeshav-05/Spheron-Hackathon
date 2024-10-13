@@ -34,6 +34,10 @@ const artistSchema = new mongoose.Schema({
       type: String
     }
   ],
+  watchTime: {
+    type: Number,
+    default: 0
+  },
   refreshToken: {
     type: String,
   }
